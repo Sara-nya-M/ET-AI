@@ -1,0 +1,20 @@
+# Environment variables / API keys
+.env
+
+# Python compilation / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local vector database (ChromaDB) and generated data files
+data/db/
+*.pkl
+
+# Python virtual environment (if any)
+venv/
+.venv/
+env/
+
+# IDE / Editor files
+.vscode/
+.idea/

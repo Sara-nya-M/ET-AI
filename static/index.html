@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Safety Compliance Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vis.js for Knowledge Graph -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2>SafeFlow <span>AI</span></h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="audit">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>SOP Audit</span>
+                </button>
+                <button class="nav-item" data-tab="graph">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    <span>Safety Graph</span>
+                </button>
+                <button class="nav-item" data-tab="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>RAG Search</span>
+                </button>
+                <button class="nav-item" data-tab="documents">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Documents</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <div class="dot green"></div>
+                    <span>System Connected</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h1 id="page-title">SOP Compliance Audit</h1>
+                    <p id="page-subtitle">Evaluate industrial standard operating procedures against federal safety regulations</p>
+                </div>
+            </header>
+
+            <!-- TABS CONTAINER -->
+            <div class="tab-content-container">
+                
+                <!-- TAB 1: SOP AUDIT -->
+                <section class="tab-pane active" id="tab-audit">
+                    <div class="grid-2-1">
+                        <div class="card glass-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-file-invoice"></i> Select SOP for Audit</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group inline-form">
+                                    <div class="select-wrapper">
+                                        <select id="sop-selector" class="form-control">
+                                            <option value="" disabled selected>Choose a Standard Operating Procedure...</option>
+                                        </select>
+                                    </div>
+                                    <button id="btn-run-audit" class="btn btn-primary">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> Run Audit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Statistics Card -->
+                        <div class="card glass-card" id="audit-stats-card" style="display: none;">
+                            <div class="card-body stats-body">
+                                <div class="radial-progress-container">
+                                    <div class="radial-progress" id="audit-score-circle">
+                                        <span class="score-val" id="audit-score-text">0%</span>
+                                    </div>
+                                    <div class="score-label">Compliance Score</div>
+                                </div>
+                                <div class="audit-summary-text">
+                                    <h4>Audit Summary</h4>
+                                    <p id="audit-summary-desc">No SOP audited yet. Select an SOP above to run analysis.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audit Results Section -->
+                    <div id="audit-results-container" class="audit-results-section" style="display: none;">
+                        <h3 class="section-title"><i class="fa-solid fa-bug-slash"></i> Identified Gaps & Non-Compliances</h3>
+                        <div class="findings-list" id="findings-list">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: KNOWLEDGE GRAPH -->
+                <section class="tab-pane" id="tab-graph">
+                    <div class="graph-layout">
+                        <!-- Left Side: Interactive Network Visualizer -->
+                        <div class="card glass-card graph-card">
+                            <div class="graph-controls">
+                                <div class="search-box">
+                                    <i class="fa-solid fa-search"></i>
+                                    <input type="text" id="graph-search" placeholder="Search safety concepts/entities...">
+                                </div>
+                                <button id="btn-fit-graph" class="btn btn-secondary btn-icon" title="Recenter Graph">
+                                    <i class="fa-solid fa-arrows-to-eye"></i>
+                                </button>
+                            </div>
+                            <div id="graph-container" class="graph-canvas-container">
+                                <div class="graph-loading">
+                                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                    <span>Rendering Interactive Safety Graph...</span>
+                                </div>
+                            </div>
+                            <div class="graph-legend">
+                                <span class="legend-item"><span class="legend-dot reg-chunk"></span>Regulation Chunk</span>
+                                <span class="legend-item"><span class="legend-dot proc-chunk"></span>SOP Chunk</span>
+                                <span class="legend-item"><span class="legend-dot ent-equip"></span>Equipment</span>
+                                <span class="legend-item"><span class="legend-dot ent-hazard"></span>Hazard</span>
+                                <span class="legend-item"><span class="legend-dot ent-role"></span>Role</span>
+                                <span class="legend-item"><span class="legend-dot ent-proc"></span>Procedure</span>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Node Details Sidebar -->
+                        <div class="card glass-card details-card" id="node-details-panel">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-circle-info"></i> Node Inspector</h3>
+                            </div>
+                            <div class="card-body" id="node-details-content">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-mouse-pointer"></i>
+                                    <p>Click any node in the graph network to inspect its relationships and details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: HYBRID RAG SEARCH -->
+                <section class="tab-pane" id="tab-search">
+                    <div class="search-layout">
+                        <div class="card glass-card">
+                            <div class="card-body">
+                                <div class="search-bar-container">
+                                    <input type="text" id="search-input" placeholder="Query regulatory safety standards (e.g. 'Atmosphere gas testing levels or LOTO rules')...">
+                                    <button id="btn-search" class="btn btn-primary">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-results-container" id="search-results-container" style="display: none;">
+                            <h3 class="section-title"><i class="fa-solid fa-quote-left"></i> Retrieved Regulations & Context</h3>
+                            <div id="search-results-list" class="search-results-list">
+                                <!-- Dynamic search results -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: DOCUMENT MANAGER -->
+                <section class="tab-pane" id="tab-documents">
+                    <div class="grid-2">
+                        <!-- Regulations Column -->
+                        <div class="card glass-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-gavel"></i> Regulatory Guidelines</h3>
+                            </div>
+                            <div class="card-body list-body">
+                                <ul id="regulations-list" class="doc-list">
+                                    <!-- Dynamic list -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- SOPs Column -->
+                        <div class="card glass-card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-file-lines"></i> Standard Operating Procedures</h3>
+                            </div>
+                            <div class="card-body list-body">
+                                <ul id="procedures-list" class="doc-list">
+                                    <!-- Dynamic list -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+    
+    <!-- Custom JS -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
